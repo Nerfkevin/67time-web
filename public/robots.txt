@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pett.app
+
+# Sitemaps
+Sitemap: https://pett.app/sitemap.xml

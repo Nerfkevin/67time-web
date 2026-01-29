@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    @apply bg-white font-nunito;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Ensure all main containers prevent horizontal overflow */
+  * {
+    box-sizing: border-box;
+  }
+
+  .hero-pattern {
+    background-color: #EBF7FF;
+    background-image: radial-gradient(#C2E5FF 0.5px, #EBF7FF 0.5px);
+    background-size: 10px 10px;
+  }
+  
+  .paw-pattern {
+    background-color: #FFE0F5;
+    background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm6 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm6 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm5 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm-11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-7a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' fill='rgba(194, 229, 255, 0.35)' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-pett-blue hover:bg-blue-300 px-8 py-3 rounded-full font-semibold transition-all shadow-md hover:shadow-lg;
+  }
+  
+  .container-section {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24;
+  }
+  
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold mb-8 text-center;
+  }
+  
+  .feature-card {
+    @apply bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all;
+  }
+  
+  .gradient-pink {
+    @apply bg-gradient-to-r from-pett-pink to-pink-100;
+  }
+  
+  .gradient-blue {
+    @apply bg-gradient-to-r from-pett-blue to-blue-100;
+  }
+  
+  .bounce {
+    animation: bounce 2s infinite;
+  }
+  
+  .wiggle {
+    animation: wiggle 2s infinite;
+  }
+  
+  .paw-btn {
+    @apply relative overflow-hidden;
+  }
+  
+  .paw-btn:before {
+    content: "🐾";
+    @apply absolute -top-1 -right-1 text-xs opacity-0 transition-all duration-300;
+  }
+  
+  .paw-btn:hover:before {
+    @apply opacity-100 top-0 right-0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-scale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-scale {
+    animation: pulse-scale 3s ease-in-out infinite;
+  }
+}
