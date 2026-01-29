@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-semibold text-white mb-3">10. Contact</h2>
               <p>
-                For privacy questions, contact support@67time.app.
+                For privacy questions, contact hello@98goats.com.
               </p>
             </section>
           </div>

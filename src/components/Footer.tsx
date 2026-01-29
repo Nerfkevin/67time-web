@@ -33,7 +33,7 @@ const Footer = () => {
             <a href="/terms" className="text-gray-400 hover:text-primary transition-colors whitespace-nowrap">
               Terms
             </a>
-            <a href="mailto:support@67time.app" className="text-gray-400 hover:text-primary transition-colors whitespace-nowrap">
+            <a href="mailto:hello@98goats.com" className="text-gray-400 hover:text-primary transition-colors whitespace-nowrap">
               Contact
             </a>
           </div>

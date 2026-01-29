@@ -18,7 +18,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        'nunito': ['Nunito', 'sans-serif'],
+        sans: ['var(--font-nunito)', 'system-ui', 'sans-serif'],
       },
       colors: {
         background: '#1A1A1A', // 67Time background

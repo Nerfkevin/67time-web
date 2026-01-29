@@ -31,7 +31,7 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6 w-[230px] justify-end">
           <Link 
-            href="mailto:support@67time.app"
+            href="mailto:hello@98goats.com"
             className="text-foreground hover:text-primary transition-colors"
           >
             Contact
@@ -64,7 +64,7 @@ const Header = () => {
         <div className="md:hidden absolute left-0 right-0 bg-card border-b border-border shadow-md z-20 mt-2 py-3 px-6">
           <nav className="flex flex-col space-y-3">
             <Link 
-              href="mailto:support@67time.app"
+              href="mailto:hello@98goats.com"
               className="text-foreground hover:text-primary transition-colors py-2"
               onClick={() => setMenuOpen(false)}
             >

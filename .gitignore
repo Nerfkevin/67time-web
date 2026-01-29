@@ -34,3 +34,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# unrelated apps
+67Time-app/
+pett-web/
+speaketh_web/

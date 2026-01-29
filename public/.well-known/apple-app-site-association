@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "J94AWS4UXK.com.kevinngo03.67time",
+        "paths": [
+          "/result/*",
+          "/challenge/*",
+          "*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "J94AWS4UXK.com.kevinngo03.67time"
+    ]
+  }
+}

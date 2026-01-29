@@ -101,7 +101,7 @@ export default function TermsAndConditions() {
             <section>
               <h2 className="text-xl font-semibold text-white mb-3">15. Contact</h2>
               <p>
-                Questions about these Terms: support@67time.app.
+                Questions about these Terms: hello@98goats.com.
               </p>
             </section>
           </div>
