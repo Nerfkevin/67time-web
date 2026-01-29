@@ -1,131 +1,89 @@
 import type { Config } from "tailwindcss";
 
-export default {
-	darkMode: ["class"],
-	content: [
-		"./pages/**/*.{ts,tsx}",
-		"./components/**/*.{ts,tsx}",
-		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
-	],
-	prefix: "",
-	theme: {
-		container: {
-			center: true,
-			padding: '2rem',
-			screens: {
-				'2xl': '1400px'
-			}
-		},
-		extend: {
-			fontFamily: {
-				'nunito': ['Nunito', 'sans-serif'],
-			},
-			colors: {
-				'pett-blue': '#C2E5FF',
-				'pett-light-blue': '#EBF7FF',
-				'pett-pink': '#FFE0F5',
-				'pett-text': '#333333',
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
-				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
-				},
-				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
-				},
-				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
-				},
-				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
-				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
-				},
-				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
-				},
-				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
-			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
-			keyframes: {
-				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
-				},
-				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
-				},
-				'float': {
-					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-10px)' },
-				},
-				'bubble': {
-					'0%': { transform: 'scale(1)', opacity: '0.5' },
-					'50%': { transform: 'scale(1.1)', opacity: '0.8' },
-					'100%': { transform: 'scale(1)', opacity: '0.5' },
-				},
-				'shimmer': {
-					'0%': { backgroundPosition: '-200% 0' },
-					'100%': { backgroundPosition: '200% 0' },
-				},
-				'bounce-small': {
-					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-4px)' },
-				},
-				'jelly': {
-					'0%, 100%': { transform: 'scale(1, 1)' },
-					'25%': { transform: 'scale(0.95, 1.05)' },
-					'50%': { transform: 'scale(1.05, 0.95)' },
-					'75%': { transform: 'scale(0.95, 1.05)' },
-				},
-			},
-			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'float': 'float 6s ease-in-out infinite',
-				'bubble': 'bubble 2s ease-in-out infinite',
-				'shimmer': 'shimmer 3s linear infinite',
-				'bounce-small': 'bounce-small 2s ease-in-out infinite',
-				'jelly': 'jelly 0.6s ease-in-out',
-			}
-		}
-	},
-	plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
-} satisfies Config;
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1400px'
+      }
+    },
+    extend: {
+      fontFamily: {
+        'nunito': ['Nunito', 'sans-serif'],
+      },
+      colors: {
+        background: '#1A1A1A', // 67Time background
+        foreground: '#FFFFFF', // 67Time text
+        primary: {
+          DEFAULT: '#FF3B30', // 67Time primary/accent
+          foreground: '#FFFFFF'
+        },
+        secondary: {
+          DEFAULT: '#252525', // 67Time surface
+          foreground: '#FFFFFF'
+        },
+        muted: {
+          DEFAULT: '#252525',
+          foreground: '#888888' // 67Time textSecondary
+        },
+        accent: {
+          DEFAULT: '#FF3B30',
+          foreground: '#FFFFFF'
+        },
+        card: {
+          DEFAULT: '#252525', // 67Time surface
+          foreground: '#FFFFFF'
+        },
+        border: 'rgba(255, 255, 255, 0.1)', // 67Time surfaceBorder
+        input: '#333333', // 67Time backgroundTertiary
+        ring: '#FF3B30',
+        
+        // Shadcn UI specific mappings if needed
+        popover: {
+          DEFAULT: '#252525',
+          foreground: '#FFFFFF'
+        },
+        destructive: {
+          DEFAULT: '#FF453A', // 67Time error
+          foreground: '#FFFFFF'
+        },
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)'
+      },
+      keyframes: {
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' }
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' }
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+      }
+    }
+  },
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+};
+
+export default config;
