@@ -1,15 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service role for server-side
-);
+// Initialize Supabase client lazily or with a check to prevent build-time errors
+// if environment variables are missing during static analysis
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// Use a getter or simple check. Since we need it for the request, we can init outside
+// but we must handle the case where variables are undefined.
+const supabase = (supabaseUrl && supabaseKey) 
+  ? createClient(supabaseUrl, supabaseKey) 
+  : null;
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { shareId: string } }
 ) {
+  // Check configuration at runtime
+  if (!supabase) {
+    console.error('Missing Supabase configuration');
+    return NextResponse.json(
+      { error: 'Server configuration error' },
+      { status: 500 }
+    );
+  }
+
   const { shareId } = params;
 
   try {
