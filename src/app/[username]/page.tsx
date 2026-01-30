@@ -57,8 +57,8 @@ export async function generateMetadata({
   const shareData = await getUserData(params.username);
 
   if (shareData) {
-    const title = `Beat ${shareData.username} in 67Time`;
-    const description = `${shareData.username} completed 67 reps in ${shareData.formattedTime}. Can you beat this score?`;
+    const title = `Beat me in 67Time`;
+    const description = `${shareData.username} completed 67 in ${shareData.formattedTime}. Can you beat this score?`;
     const imageUrl = `${BASE_URL}/api/og/${params.username}`;
     const url = `${BASE_URL}/${params.username}`;
 
