@@ -95,7 +95,6 @@ export async function generateMetadata({
   if (profile) {
     const deepLinkUrl = `https://67time.app/${params.username}`;
     const avatarUrl =
-      getImageUrlFromR2Key(profile.avatar_r2_key) ||
       profile.avatar ||
       "https://67time.app/og-invite.png";
 
