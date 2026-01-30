@@ -58,8 +58,8 @@ export async function generateMetadata({
   const shareData = await getUserData(params.username);
 
   if (shareData) {
-    const title = `Beat ${shareData.username} in 67Time`;
-    const description = `${shareData.username} completed 67 reps in ${shareData.formattedTime}. Can you beat this score?`;
+    const title = `Beat me in 67Time`;
+    const description = `${shareData.username} completed 67 in ${shareData.formattedTime}. Can you beat this time?`;
     // Use static OG image
     const imageUrl = `${BASE_URL}/og-image.png`;
     const url = `${BASE_URL}/${params.username}`;
@@ -101,7 +101,7 @@ export async function generateMetadata({
     const avatarUrl =
       getImageUrlFromR2Key(profile.avatar_r2_key) ||
       profile.avatar ||
-      "https://67time.app/og-invite.jpg";
+      "https://67time.app/og-invite.png";
 
     const titleText = `Add ${profile.name || profile.username} on 67Time.`;
     const descriptionText = "I want to see your photos on 67Time! Tap the link to accept.";
