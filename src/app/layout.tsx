@@ -8,6 +8,7 @@ const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-public-sa
 export const metadata: Metadata = {
   title: "67Time",
   description: "67Time App",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://67time.app"),
 };
 
 export default function RootLayout({

@@ -114,12 +114,19 @@ export async function generateMetadata({
         card: "summary_large_image",
         images: [avatarUrl],
       },
+      appLinks: {
+        ios: {
+          url: deepLinkUrl,
+          app_store_id: "6746765317",
+        },
+        web: {
+          url: deepLinkUrl,
+          should_fallback: true,
+        },
+      },
       other: {
           "apple-itunes-app": `app-id=6746765317, app-argument=${deepLinkUrl}`,
-          "al:ios:url": deepLinkUrl,
-          "al:ios:app_store_id": "6746765317",
           "al:ios:app_name": "67Time",
-          "al:web:url": deepLinkUrl,
       }
     };
   }
