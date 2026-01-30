@@ -57,7 +57,7 @@ export async function generateMetadata({
     const title = `Beat me in 67Time`;
     const description = `${shareData.username} completed 67 in ${shareData.formattedTime}. Can you beat this time?`;
     // Use static OG image
-    const imageUrl = `${BASE_URL}/og-image.png`;
+    const imageUrl = `${BASE_URL}/og-image.jpg`;
     const url = `${BASE_URL}/${params.username}`;
 
     return {
@@ -96,7 +96,7 @@ export async function generateMetadata({
     const deepLinkUrl = `https://67time.app/${params.username}`;
     const avatarUrl =
       profile.avatar ||
-      "https://67time.app/og-invite.png";
+      "https://67time.app/og-invite.jpg";
 
     const titleText = `Add ${profile.name || profile.username} on 67Time.`;
     const descriptionText = "I want to see your photos on 67Time! Tap the link to accept.";
