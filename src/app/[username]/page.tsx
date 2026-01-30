@@ -106,7 +106,14 @@ export async function generateMetadata({
       openGraph: {
         title: titleText,
         description: descriptionText,
-        images: [avatarUrl],
+        images: [
+          {
+            url: avatarUrl,
+            width: 1200,
+            height: 630,
+            alt: `Invite to join ${profile.name || profile.username} on 67Time`,
+          },
+        ],
         url: deepLinkUrl,
         type: "website",
       },
