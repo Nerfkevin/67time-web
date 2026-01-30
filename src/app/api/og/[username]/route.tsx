@@ -6,9 +6,9 @@ export const runtime = 'edge';
 // Use local URL in dev, production URL in prod
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://67time.app';
 
-async function getShareData(shareId: string) {
+async function getUserData(username: string) {
   const response = await fetch(
-    `${BASE_URL}/api/share/${shareId}`,
+    `${BASE_URL}/api/user/${username}`,
     { cache: 'no-store' }
   );
   
@@ -21,13 +21,13 @@ async function getShareData(shareId: string) {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { shareId: string } }
+  { params }: { params: { username: string } }
 ) {
   try {
-    const data = await getShareData(params.shareId);
+    const data = await getUserData(params.username);
     
     if (!data) {
-      // Return default image if share not found
+      // Return default image if user not found
       return new ImageResponse(
         (
           <div
@@ -77,7 +77,6 @@ export async function GET(
               marginBottom: 60,
             }}
           >
-            {/* You can add your logo here as a base64 image or hosted URL */}
             <div
               style={{
                 fontSize: 120,
@@ -111,7 +110,7 @@ export async function GET(
                 fontWeight: 600,
               }}
             >
-              COMPLETED IN
+              BEST TIME
             </div>
             <div
               style={{
@@ -136,31 +135,16 @@ export async function GET(
             by @{data.username}
           </div>
 
-          {/* Badge if new best */}
-          {data.isNewBest && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 214, 10, 0.2)',
-                padding: '12px 24px',
-                borderRadius: 20,
-                marginTop: 20,
-              }}
-            >
-              <div style={{ fontSize: 28, marginRight: 12 }}>⚡</div>
-              <div
-                style={{
-                  fontSize: 24,
-                  color: '#FFD610',
-                  fontWeight: 600,
-                  letterSpacing: '2px',
-                }}
-              >
-                NEW PERSONAL BEST
-              </div>
-            </div>
-          )}
+          {/* Completions */}
+          <div
+            style={{
+              fontSize: 24,
+              color: '#888',
+              marginBottom: 40,
+            }}
+          >
+            {data.completions} completions
+          </div>
 
           {/* CTA */}
           <div

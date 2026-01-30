@@ -7,17 +7,8 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/result/:shareId',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=600',
-          },
-        ],
-      },
-      {
-        // Cache profile pages on the edge for performance
-        source: '/:username((?!api|invite|_next/static|_next/image|favicon.ico|result).*)',
+        // Cache user profile pages on the edge for performance
+        source: '/:username((?!api|invite|_next/static|_next/image|favicon.ico).*)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=300, stale-while-revalidate=600' },
         ],
