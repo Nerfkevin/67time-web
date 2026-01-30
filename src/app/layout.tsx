@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Public_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
-const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap" });
+const publicSans = Public_Sans({ subsets: ["latin"], variable: "--font-public-sans", display: "swap" });
 
 export const metadata: Metadata = {
   title: "67Time",
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${nunito.variable} ${nunito.className} min-h-screen bg-white antialiased`}>
+      <body className={`${publicSans.variable} ${publicSans.className} min-h-screen bg-white antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

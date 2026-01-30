@@ -170,9 +170,6 @@ export default async function UserPage({
               <div className="text-6xl sm:text-7xl font-bold text-yellow-500 font-mono tracking-tighter break-all">
                 {shareData.formattedTime}
               </div>
-              <div className="text-xl text-gray-300">
-                by <span className="text-white font-semibold">@{shareData.username}</span>
-              </div>
             </div>
           </div>
 
@@ -184,15 +181,8 @@ export default async function UserPage({
             </p>
 
             {/* App Links */}
-            <div className="space-y-4 pt-4">
-              <a
-                href={`time67://${params.username}`}
-                className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-6 rounded-xl font-semibold text-lg transition shadow-lg hover:shadow-xl"
-              >
-                Open in 67Time App
-              </a>
-
-              <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-4 pt-4 flex flex-col items-center">
+              <div className="grid grid-cols-1 gap-4 w-full">
                 <a
                   href={`https://apps.apple.com/app/id${process.env.NEXT_PUBLIC_APP_STORE_ID}`}
                   className="block bg-black hover:bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold transition flex items-center justify-center gap-3"
@@ -206,6 +196,13 @@ export default async function UserPage({
                   </div>
                 </a>
               </div>
+
+              <a
+                href={`time67://${params.username}`}
+                className="block w-full bg-[#FF3B30] hover:bg-[#D73329] text-white py-3.5 px-6 rounded-xl font-semibold text-lg transition shadow-lg hover:shadow-xl"
+              >
+                Open in 67Time App
+              </a>
             </div>
           </div>
 
