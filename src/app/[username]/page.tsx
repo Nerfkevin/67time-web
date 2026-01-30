@@ -96,7 +96,7 @@ export async function generateMetadata({
     const deepLinkUrl = `https://67time.app/${params.username}`;
     const avatarUrl =
       profile.avatar ||
-      "https://67time.app/og-invite.jpg";
+      "https://67time.app/og-image.jpg";
 
     const titleText = `Add ${profile.name || profile.username} on 67Time.`;
     const descriptionText = "I want to see your photos on 67Time! Tap the link to accept.";
