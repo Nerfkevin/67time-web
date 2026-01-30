@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ClientSlugPage from "./client";
 import { Profile } from "./types";
+import Image from 'next/image';
 
 // Helper to build R2 image URL
 const getImageUrlFromR2Key = (r2Key: string | null | undefined): string | null => {
@@ -57,9 +58,10 @@ export async function generateMetadata({
   const shareData = await getUserData(params.username);
 
   if (shareData) {
-    const title = `Beat me in 67Time`;
-    const description = `${shareData.username} completed 67 in ${shareData.formattedTime}. Can you beat this score?`;
-    const imageUrl = `${BASE_URL}/api/og/${params.username}`;
+    const title = `Beat ${shareData.username} in 67Time`;
+    const description = `${shareData.username} completed 67 reps in ${shareData.formattedTime}. Can you beat this score?`;
+    // Use static OG image
+    const imageUrl = `${BASE_URL}/og-image.png`;
     const url = `${BASE_URL}/${params.username}`;
 
     return {
@@ -73,7 +75,7 @@ export async function generateMetadata({
             url: imageUrl,
             width: 1200,
             height: 630,
-            alt: `${shareData.username}'s 67Time best score - ${shareData.formattedTime}`,
+            alt: '67Time - The Ultimate Focus Challenge',
           },
         ],
         url,
@@ -142,70 +144,73 @@ export default async function UserPage({
 
   if (shareData) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-8">
-        <div className="max-w-2xl w-full space-y-8">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-4 sm:p-8">
+        <div className="max-w-md w-full space-y-6">
           {/* Header */}
-          <div className="text-center space-y-4">
-            <h1 className="text-6xl font-bold">67Time</h1>
-            <p className="text-2xl text-gray-400">Challenge</p>
+          <div className="text-center flex flex-col items-center">
+            {/* Logo Image */}
+            <div className="relative w-24 h-24 mb-4">
+              <Image 
+                src="/logo.png" 
+                alt="67Time Logo" 
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+            <h1 className="text-5xl font-bold">67Time</h1>
           </div>
 
           {/* Result Card */}
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-12 shadow-2xl border border-gray-700">
-            <div className="text-center space-y-6">
-              <div className="text-sm text-gray-400 tracking-widest uppercase">
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 sm:p-10 shadow-2xl border border-gray-700">
+            <div className="text-center space-y-4">
+              <div className="text-xs text-gray-400 tracking-widest uppercase">
                 Best Time
               </div>
-              <div className="text-8xl font-bold text-yellow-500 font-mono">
+              <div className="text-6xl sm:text-7xl font-bold text-yellow-500 font-mono tracking-tighter break-all">
                 {shareData.formattedTime}
               </div>
-              <div className="text-2xl text-gray-300">
+              <div className="text-xl text-gray-300">
                 by <span className="text-white font-semibold">@{shareData.username}</span>
-              </div>
-              <div className="text-lg text-gray-400">
-                {shareData.completions} completions
               </div>
             </div>
           </div>
 
           {/* CTA Section */}
-          <div className="text-center space-y-6">
-            <h2 className="text-4xl font-bold">Beat {shareData.username}'s score!</h2>
-            <p className="text-xl text-gray-400">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl font-bold">Beat {shareData.username}'s score!</h2>
+            <p className="text-lg text-gray-400">
               Download 67Time and start your focus session
             </p>
 
             {/* App Links */}
-            <div className="space-y-4 pt-6">
+            <div className="space-y-4 pt-4">
               <a
                 href={`time67://${params.username}`}
-                className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 px-8 rounded-xl font-semibold text-lg transition shadow-lg hover:shadow-xl"
+                className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3.5 px-6 rounded-xl font-semibold text-lg transition shadow-lg hover:shadow-xl"
               >
                 Open in 67Time App
               </a>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <a
                   href={`https://apps.apple.com/app/id${process.env.NEXT_PUBLIC_APP_STORE_ID}`}
-                  className="block bg-black hover:bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold transition"
+                  className="block bg-black hover:bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold transition flex items-center justify-center gap-3"
                 >
-                  <div className="text-xs text-gray-400">Download on the</div>
-                  <div>App Store</div>
-                </a>
-
-                <a
-                  href={`https://play.google.com/store/apps/details?id=${process.env.NEXT_PUBLIC_PLAY_STORE_ID}`}
-                  className="block bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-xl font-semibold transition"
-                >
-                  <div className="text-xs text-green-200">Get it on</div>
-                  <div>Google Play</div>
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.21-1.96 1.07-3.11-1.05.05-2.31.74-3.03 1.58-.67.77-1.24 2.02-1.09 3.12 1.15.09 2.33-.76 3.05-1.59" />
+                  </svg>
+                  <div className="text-left">
+                    <div className="text-[10px] text-gray-400 leading-none mb-0.5">Download on the</div>
+                    <div className="text-sm font-bold leading-none">App Store</div>
+                  </div>
                 </a>
               </div>
             </div>
           </div>
 
           {/* Last Updated */}
-          <div className="text-center text-sm text-gray-500 pt-8">
+          <div className="text-center text-xs text-gray-500 pt-4 pb-8">
             <p>Last updated {new Date(shareData.lastUpdated).toLocaleDateString()}</p>
           </div>
         </div>
