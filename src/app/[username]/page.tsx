@@ -57,7 +57,7 @@ export async function generateMetadata({
     const title = `Beat me in 67Time`;
     const description = `${shareData.username} completed 67 in ${shareData.formattedTime}. Can you beat this time?`;
     // Use static OG image
-    const imageUrl = `${BASE_URL}/og-image.jpg`;
+    const imageUrl = '/og-image.jpg';
     const url = `${BASE_URL}/${params.username}`;
 
     return {
