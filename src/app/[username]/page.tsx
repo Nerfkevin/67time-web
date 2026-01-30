@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import ClientSlugPage from "../[slug]/client";
-import { Profile } from "../[slug]/types";
+import ClientSlugPage from "./client";
+import { Profile } from "./types";
 
 // Helper to build R2 image URL
 const getImageUrlFromR2Key = (r2Key: string | null | undefined): string | null => {
