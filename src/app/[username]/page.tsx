@@ -5,11 +5,7 @@ import ClientSlugPage from "./client";
 import { Profile } from "./types";
 import Image from 'next/image';
 
-// Helper to build R2 image URL
-const getImageUrlFromR2Key = (r2Key: string | null | undefined): string | null => {
-  if (!r2Key) return null;
-  return `https://pett-images-production.kevinngo03.workers.dev/image/${r2Key}`;
-};
+// Helper to build R2 image URL - REMOVED
 
 // Use local URL in dev, production URL in prod
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://67time.app';
@@ -217,7 +213,6 @@ export default async function UserPage({
 
   if (profile) {
     const avatarUrl =
-      getImageUrlFromR2Key(profile.avatar_r2_key) ||
       profile.avatar ||
       "https://67time.app/og-invite.jpg";
 
