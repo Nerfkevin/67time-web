@@ -1,613 +1,495 @@
-# 67Time Sharing Feature Setup Guide
+# Static OG Image Setup - 67Time Logo Only
 
-Complete setup guide for implementing the sharing feature in 67Time, allowing users to share their results as images on social media platforms.
-
-## Table of Contents
-1. [Overview](#overview)
-2. [Mobile App Setup](#mobile-app-setup)
-3. [Website Setup](#website-setup)
-4. [Facebook App Configuration](#facebook-app-configuration)
-5. [Apple App Site Association](#apple-app-site-association)
-6. [Testing](#testing)
-
----
+Simple setup for sharing links with a static 67Time logo image (not dynamic).
 
 ## Overview
 
-The sharing feature allows users to:
-- Share their workout results as beautifully formatted images
-- Post to Instagram Stories, Facebook Stories, SMS, and system share
-- Generate shareable links with Open Graph tags that display result previews
-- Deep link back to the app from shared links
+**What users see when sharing:**
+- Link preview shows: 67Time logo (static image)
+- Title: "Beat me in 67Time"
+- Description: "Start a focus session and compete with [username] in 67Time"
 
-**Implementation based on Pett's sharing system** with "Beat my score on 67Time" context.
+**When sharing to Stories (Instagram/Facebook):**
+- App captures score card using react-native-view-shot ✅ (already working)
+- Users can add the link as text/sticker
 
 ---
 
-## Mobile App Setup
+## Step 1: Create Static OG Image
 
-### Dependencies Installed
-```json
-{
-  "expo-sharing": "^latest",
-  "expo-sms": "^latest",
-  "react-native-view-shot": "^latest",
-  "react-native-share": "^latest",
-  "expo-image-manipulator": "^latest",
-  "react-native-photo-manipulator": "^latest"
-}
+### Option A: Design Your Own (Recommended)
+
+Create a 1200x630 image with:
+- 67Time logo/branding
+- Tagline (optional): "The Ultimate Focus Challenge"
+- Background color matching your brand
+- Clean, simple design
+
+**Requirements:**
+- Dimensions: **Exactly 1200x630 pixels**
+- Format: PNG or JPG
+- File size: < 1MB (smaller is better)
+- No text smaller than 18px (readability)
+
+**Design Tools:**
+- Figma (free)
+- Canva (free templates for OG images)
+- Photoshop
+- Sketch
+
+**Template proportions:**
+```
+┌─────────────────────────────────────┐
+│                                     │ 
+│          [67Time Logo]              │  1200px wide
+│                                     │
+│   The Ultimate Focus Challenge      │  630px tall
+│                                     │
+└─────────────────────────────────────┘
 ```
 
-### Files Created
-- `services/shareService.ts` - Platform-specific sharing logic
-- `services/watermarkService.ts` - Image watermarking
-- `components/ResultImageCapture.tsx` - Captures results as images
-- `components/ShareModal.tsx` - Share UI modal
+### Option B: Use Text-Based Image (Quick & Simple)
 
-### Deep Linking Configuration
+If you don't have a logo yet, create a simple text-based image:
 
-#### app.json
-Already configured with:
-- **iOS Associated Domains**: `67time.app`, `www.67time.app`
-- **Android Intent Filters**: Auto-verify enabled for deep links
-- **Custom URL Scheme**: `time67://`
+**Using Figma:**
+1. Create new frame: 1200x630
+2. Background: Dark gradient (#1a1a1a to #2d2d2d)
+3. Add text: "67Time" (large, bold, white)
+4. Add subtext: "The Ultimate Focus Challenge" (smaller, gray)
+5. Export as PNG
 
-#### _layout.tsx
-Deep linking configuration added with URL event handlers.
+**Using Canva:**
+1. Go to canva.com
+2. Search "Open Graph Image"
+3. Customize with 67Time branding
+4. Download as PNG
+
+### Option C: Simple Code-Generated Image
+
+I can help you create a simple one using HTML/CSS if needed.
 
 ---
 
-## Website Setup
+## Step 2: Add Image to Website
 
-You need to set up a website at **67time.app** to handle shared links and Open Graph meta tags.
+### File Structure
 
-### Required Pages
+```
+your-website/
+├── public/
+│   └── og-image.png          ← Your 1200x630 image here
+├── app/
+│   ├── [username]/
+│   │   └── page.tsx
+│   └── api/
+│       └── user/
+│           └── [username]/
+│               └── route.ts
+└── .env.local
+```
 
-#### 1. Result Landing Page
-Create a dynamic route: `/result/[shareId]`
+### Instructions
 
-This page should:
-- Display a preview of the shared result
-- Show Open Graph meta tags for rich unfurling on social media
-- Display a "Beat My Score" call-to-action
-- Include Smart App Banner for iOS and Play Store badge for Android
-- Deep link to app when clicked
+1. **Save your image as `og-image.png`**
+2. **Place it in the `public/` folder** of your Next.js project
+3. **Verify it's accessible:**
+   ```bash
+   # After deploying
+   https://67time.app/og-image.png
+   # Should show your image
+   ```
 
-**Example Next.js Implementation:**
+---
 
-```tsx
-// pages/result/[shareId].tsx or app/result/[shareId]/page.tsx
-import Head from 'next/head';
-import { GetServerSideProps } from 'next';
+## Step 3: Update Landing Page Code
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const shareId = params?.shareId as string;
-  
-  // Fetch result data from your backend/database
-  // const resultData = await fetchResultData(shareId);
-  
-  return {
-    props: {
-      shareId,
-      // resultData,
-      username: 'user', // From your backend
-      time: '1:23.456', // From your backend
-      reps: 67,
-    },
-  };
-};
+### File: `app/[username]/page.tsx`
 
-export default function ResultShare({ shareId, username, time, reps }) {
-  const title = `${username}'s 67Time Result - ${time}`;
-  const description = `I completed ${reps} reps in ${time}! Can you beat my score?`;
-  const imageUrl = `https://67time.app/api/og/${shareId}`; // Generate OG image
-  const appUrl = `https://67time.app/result/${shareId}`;
+**Replace the entire file with this:**
 
-  return (
-    <>
-      <Head>
-        {/* Smart App Banner for iOS */}
-        <meta 
-          name="apple-itunes-app" 
-          content={`app-id=YOUR_APP_STORE_ID, app-argument=time67://result/${shareId}`} 
-        />
+```typescript
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-        {/* Open Graph Meta Tags */}
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={imageUrl} />
-        <meta property="og:url" content={appUrl} />
-        <meta property="og:type" content="website" />
-        
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={imageUrl} />
-
-        {/* Android Play Store Link */}
-        <link 
-          rel="alternate" 
-          href="https://play.google.com/store/apps/details?id=com.kevinngo03.time67" 
-        />
-      </Head>
-
-      <main className="flex flex-col items-center justify-center min-h-screen p-8 text-center">
-        <h1 className="text-4xl font-bold mb-4">
-          {username}'s 67Time Result
-        </h1>
-        
-        <div className="bg-gray-100 rounded-lg p-8 mb-6">
-          <p className="text-6xl font-bold mb-2">{time}</p>
-          <p className="text-xl text-gray-600">{reps} reps completed</p>
-        </div>
-
-        <h2 className="text-2xl font-semibold mb-6">
-          Beat my score on 67Time!
-        </h2>
-
-        <div className="space-y-4 w-full max-w-sm">
-          <a 
-            href={`time67://result/${shareId}`}
-            className="block w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition"
-          >
-            Open in 67Time App
-          </a>
-          
-          <a 
-            href="https://apps.apple.com/app/id-YOUR_APP_STORE_ID"
-            className="block w-full bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition"
-          >
-            Download on the App Store
-          </a>
-          
-          <a 
-            href="https://play.google.com/store/apps/details?id=com.kevinngo03.time67"
-            className="block w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition"
-          >
-            Get it on Google Play
-          </a>
-        </div>
-
-        <p className="mt-8 text-sm text-gray-500">
-          67Time - The Ultimate Fitness Challenge
-        </p>
-      </main>
-    </>
+async function getUserData(username: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/user/${username}`,
+    { cache: 'no-store' }
   );
-}
-```
-
-#### 2. Open Graph Image Generator (Optional but Recommended)
-
-Create an API route to generate dynamic OG images: `/api/og/[shareId]`
-
-You can use libraries like:
-- `@vercel/og` (for Vercel deployments)
-- `node-canvas` (for custom servers)
-- Pre-generated images stored in a CDN
-
-**Example with @vercel/og:**
-
-```tsx
-// pages/api/og/[shareId].tsx
-import { ImageResponse } from '@vercel/og';
-import { NextRequest } from 'next/server';
-
-export const config = {
-  runtime: 'edge',
-};
-
-export default async function handler(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const shareId = searchParams.get('shareId');
   
-  // Fetch result data
-  // const data = await fetchResultData(shareId);
-  const username = 'user'; // From backend
-  const time = '1:23.456'; // From backend
-  
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#1a1a1a',
-          color: 'white',
-          fontSize: 60,
-          fontWeight: 'bold',
-        }}
-      >
-        <div style={{ fontSize: 80, marginBottom: 40 }}>🏆</div>
-        <div>67Time Challenge</div>
-        <div style={{ fontSize: 120, margin: '40px 0' }}>{time}</div>
-        <div style={{ fontSize: 40, opacity: 0.8 }}>by @{username}</div>
-        <div style={{ fontSize: 40, marginTop: 60, opacity: 0.6 }}>
-          Beat my score!
-        </div>
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    }
-  );
-}
-```
-
-### Next.js Configuration
-
-Add caching headers in `next.config.js`:
-
-```js
-module.exports = {
-  async headers() {
-    return [
-      {
-        source: '/result/:shareId',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=600',
-          },
-        ],
-      },
-    ];
-  },
-};
-```
-
----
-
-## Facebook App Configuration
-
-To enable Facebook and Instagram Stories sharing, you need to set up a Facebook App.
-
-### Step 1: Create Facebook App
-
-1. Go to [Facebook Developers](https://developers.facebook.com/)
-2. Click **"My Apps"** → **"Create App"**
-3. Select **"Consumer"** as the app type
-4. Fill in:
-   - **App Name**: 67Time
-   - **App Contact Email**: your-email@example.com
-5. Click **"Create App"**
-
-### Step 2: Configure App Settings
-
-1. In the left sidebar, go to **Settings** → **Basic**
-2. Add **App Domains**: `67time.app`
-3. Add **Privacy Policy URL**: `https://67time.app/privacy`
-4. Add **Terms of Service URL**: `https://67time.app/terms`
-5. Select **Category**: Health & Fitness
-
-### Step 3: Add iOS Platform
-
-1. Click **"Add Platform"** → Select **iOS**
-2. Fill in:
-   - **Bundle ID**: `com.kevinngo03.67time`
-   - **App Store ID**: Your App Store ID (get this after app submission)
-3. Click **"Save Changes"**
-
-### Step 4: Add Android Platform
-
-1. Click **"Add Platform"** → Select **Android**
-2. Fill in:
-   - **Google Play Package Name**: `com.kevinngo03.time67`
-   - **Key Hashes**: Generate using command below
-3. Click **"Save Changes"**
-
-**Generate Android Key Hash:**
-
-For development:
-```bash
-keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
-```
-
-For production (use your release keystore):
-```bash
-keytool -exportcert -alias your-key-alias -keystore your-release-key.keystore | openssl sha1 -binary | openssl base64
-```
-
-### Step 5: Get App ID and Client Token
-
-1. In **Settings** → **Basic**, note:
-   - **App ID**: e.g., `1234567890123456`
-   - **Client Token**: Click **"Show"** to reveal
-
-### Step 6: Enable Instagram Platform (Optional)
-
-1. In left sidebar, click **"Add Products"**
-2. Find **"Instagram"** and click **"Set Up"**
-3. Complete Instagram Basic Display setup if you want additional Instagram features
-
-### Step 7: Make App Public (When Ready)
-
-1. Toggle the app from **"Development"** to **"Live"** mode
-2. You'll need to complete:
-   - Privacy Policy
-   - Data Deletion Instructions URL
-   - App Review (if using advanced features)
-
-### Notes:
-- For basic sharing (Instagram/Facebook Stories), you don't need app review
-- The app uses native sharing sheets, not Facebook SDK authentication
-- Facebook App ID is mainly for app attribution and analytics
-
----
-
-## Apple App Site Association
-
-To enable Universal Links on iOS, you need to host an Apple App Site Association (AASA) file on your website.
-
-### Step 1: Create AASA File
-
-Create a file at: `https://67time.app/.well-known/apple-app-site-association`
-
-**Content (no file extension):**
-
-```json
-{
-  "applinks": {
-    "apps": [],
-    "details": [
-      {
-        "appID": "TEAM_ID.com.kevinngo03.67time",
-        "paths": [
-          "/result/*",
-          "/challenge/*",
-          "*"
-        ]
-      }
-    ]
-  },
-  "webcredentials": {
-    "apps": [
-      "TEAM_ID.com.kevinngo03.67time"
-    ]
+  if (!response.ok) {
+    return null;
   }
+  
+  return response.json();
 }
-```
 
-**Replace `TEAM_ID` with your Apple Developer Team ID:**
-- Find it in [Apple Developer Account](https://developer.apple.com/account)
-- Under **Membership** section
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}): Promise<Metadata> {
+  const data = await getUserData(params.username);
 
-### Step 2: Host the File
+  if (!data) {
+    return {
+      title: '67Time - User Not Found',
+    };
+  }
 
-Requirements:
-- ✅ Must be served over **HTTPS**
-- ✅ Must be at path: `/.well-known/apple-app-site-association`
-- ✅ Must have **no file extension**
-- ✅ Must return `Content-Type: application/json`
-- ✅ Must be publicly accessible (not behind authentication)
+  const title = 'Beat me in 67Time';
+  const description = `Start a focus session and compete with ${data.username} in 67Time`;
+  // Static OG image - same for everyone
+  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/og-image.png`;
+  const url = `${process.env.NEXT_PUBLIC_APP_URL}/${params.username}`;
 
-**Vercel/Netlify Example:**
-
-Place file in `public/.well-known/apple-app-site-association`
-
-**Next.js Example (pages router):**
-
-```js
-// pages/.well-known/apple-app-site-association.ts
-export default function handler(req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  res.status(200).json({
-    applinks: {
-      apps: [],
-      details: [
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
         {
-          appID: 'TEAM_ID.com.kevinngo03.67time',
-          paths: ['/result/*', '/challenge/*', '*'],
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: '67Time - The Ultimate Focus Challenge',
         },
       ],
+      url,
+      type: 'website',
     },
-    webcredentials: {
-      apps: ['TEAM_ID.com.kevinngo03.67time'],
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imageUrl],
     },
-  });
+    other: {
+      'apple-itunes-app': `app-id=${process.env.NEXT_PUBLIC_APP_STORE_ID}, app-argument=time67://${params.username}`,
+    },
+  };
+}
+
+export default async function UserPage({
+  params,
+}: {
+  params: { username: string };
+}) {
+  const data = await getUserData(params.username);
+
+  if (!data) {
+    notFound();
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-8">
+      <div className="max-w-2xl w-full space-y-8">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <h1 className="text-6xl font-bold">67Time</h1>
+          <p className="text-2xl text-gray-400">Challenge</p>
+        </div>
+
+        {/* Result Card */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-12 shadow-2xl border border-gray-700">
+          <div className="text-center space-y-6">
+            <div className="text-sm text-gray-400 tracking-widest uppercase">
+              Best Time
+            </div>
+            <div className="text-8xl font-bold text-yellow-500 font-mono">
+              {data.formattedTime}
+            </div>
+            <div className="text-2xl text-gray-300">
+              by <span className="text-white font-semibold">@{data.username}</span>
+            </div>
+            <div className="text-lg text-gray-400">
+              {data.completions} completions
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="text-center space-y-6">
+          <h2 className="text-4xl font-bold">Beat {data.username}'s score!</h2>
+          <p className="text-xl text-gray-400">
+            Download 67Time and start your focus session
+          </p>
+
+          {/* App Links */}
+          <div className="space-y-4 pt-6">
+            <a
+              href={`time67://${params.username}`}
+              className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 px-8 rounded-xl font-semibold text-lg transition shadow-lg hover:shadow-xl"
+            >
+              Open in 67Time App
+            </a>
+
+            <div className="grid grid-cols-2 gap-4">
+              <a
+                href={`https://apps.apple.com/app/id${process.env.NEXT_PUBLIC_APP_STORE_ID}`}
+                className="block bg-black hover:bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold transition"
+              >
+                <div className="text-xs text-gray-400">Download on the</div>
+                <div>App Store</div>
+              </a>
+
+              <a
+                href={`https://play.google.com/store/apps/details?id=${process.env.NEXT_PUBLIC_PLAY_STORE_ID}`}
+                className="block bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-xl font-semibold transition"
+              >
+                <div className="text-xs text-green-200">Get it on</div>
+                <div>Google Play</div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Last Updated */}
+        <div className="text-center text-sm text-gray-500 pt-8">
+          <p>Last updated {new Date(data.lastUpdated).toLocaleDateString()}</p>
+        </div>
+      </div>
+    </div>
+  );
 }
 ```
 
-### Step 3: Verify AASA File
-
-Test your AASA file:
-
-1. **Apple's AASA Validator:**
-   - Visit: https://search.developer.apple.com/appsearch-validation-tool/
-   - Enter: `https://67time.app`
-   - Check for errors
-
-2. **Manual Test:**
-   ```bash
-   curl -I https://67time.app/.well-known/apple-app-site-association
-   ```
-   Should return:
-   ```
-   HTTP/2 200
-   content-type: application/json
-   ```
-
-3. **Test on Device:**
-   - Install app on iOS device
-   - Open Safari, navigate to `https://67time.app/result/test`
-   - Long press the link → Should show **"Open in 67Time"**
+**Key Changes:**
+- ✅ Uses static image: `/og-image.png`
+- ✅ Same image for all users
+- ✅ Simpler description
+- ✅ No dynamic image generation needed
 
 ---
 
-## Android App Links
+## Step 4: Remove Dynamic OG Image API (Optional)
 
-For Android deep linking verification:
-
-### Step 1: Create assetlinks.json
-
-Create file at: `https://67time.app/.well-known/assetlinks.json`
-
-```json
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.kevinngo03.time67",
-      "sha256_cert_fingerprints": [
-        "YOUR_SHA256_FINGERPRINT_HERE"
-      ]
-    }
-  }
-]
+Since you don't need it, you can **delete this folder:**
+```
+app/api/og/
 ```
 
-### Step 2: Get SHA256 Fingerprint
+This simplifies your website - less code to maintain!
 
-**For development (debug keystore):**
-```bash
-keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+---
+
+## Simplified File Structure
+
+Now your website only needs:
+
+```
+your-website/
+├── public/
+│   └── og-image.png                     ✅ Static logo image
+├── app/
+│   ├── [username]/
+│   │   └── page.tsx                     ✅ Landing page
+│   └── api/
+│       └── user/
+│           └── [username]/
+│               └── route.ts             ✅ User data API
+└── .env.local                          ✅ Environment variables
 ```
 
-**For production (release keystore):**
-```bash
-keytool -list -v -keystore your-release-key.keystore -alias your-key-alias
-```
-
-Look for the **SHA256** value in the output.
-
-### Step 3: Verify Android App Links
-
-Test your configuration:
-
-1. **Google's Statement List Generator:**
-   - Visit: https://developers.google.com/digital-asset-links/tools/generator
-   - Enter your package name and fingerprint
-   - Verify against your hosted file
-
-2. **adb Test:**
-   ```bash
-   adb shell am start -W -a android.intent.action.VIEW -d "https://67time.app/result/test" com.kevinngo03.time67
-   ```
+**Just 3 files + 1 image!**
 
 ---
 
 ## Testing
 
-### Test Sharing Flow
+### 1. Test Image is Accessible
 
-1. **Complete a challenge** in the app
-2. On the **Results** screen, tap **"Share Result"**
-3. Select a platform (Instagram, Facebook, SMS, or More)
-4. Verify:
-   - Image is captured correctly
-   - Watermark is visible
-   - Share dialog appears
-   - Content is posted successfully
-
-### Test Deep Links
-
-#### iOS:
 ```bash
-xcrun simctl openurl booted "time67://result/test123"
+# After deploying
+open https://67time.app/og-image.png
+
+# Should show your 67Time logo image
 ```
 
-#### Android:
+### 2. Test Landing Page
+
 ```bash
-adb shell am start -W -a android.intent.action.VIEW -d "time67://result/test123" com.kevinngo03.time67
+# Open in browser
+open https://67time.app/your_username
+
+# View page source (right-click → View Page Source)
+# Search for: og:image
+# Should find: content="https://67time.app/og-image.png"
 ```
 
-### Test Universal Links
+### 3. Test Facebook Preview
 
-1. **Create a test page** at `https://67time.app/result/test123`
-2. **Send the link** via iMessage or Notes
-3. **Tap the link**
-4. **Verify**:
-   - App opens (if installed)
-   - OR website opens with "Open in App" button
+1. Go to: https://developers.facebook.com/tools/debug/
+2. Enter: `https://67time.app/your_username`
+3. Click "Debug"
+4. Click "Scrape Again"
 
-### Test Open Graph
+**You should see:**
+- ✅ Title: "Beat me in 67Time"
+- ✅ Description: "Start a focus session and compete with [username]..."
+- ✅ Image: Your 67Time logo (1200x630)
+- ✅ No errors
 
-1. **Share the link** on Slack, Discord, Twitter, or Facebook
-2. **Verify preview shows**:
-   - Title: "Username's 67Time Result - Time"
-   - Description: "I completed 67 reps in [time]! Can you beat my score?"
-   - Image: Result preview
+### 4. Test Real Share
 
----
-
-## Troubleshooting
-
-### Sharing not working
-
-1. **Check dependencies are installed:**
-   ```bash
-   npm list expo-sharing expo-sms react-native-view-shot
-   ```
-
-2. **Rebuild the app:**
-   ```bash
-   npx expo prebuild --clean
-   npm run ios # or npm run android
-   ```
-
-3. **Check permissions in Info.plist (iOS):**
-   - Photo library access
-
-### Deep links not working
-
-1. **Verify AASA file is accessible:**
-   ```bash
-   curl https://67time.app/.well-known/apple-app-site-association
-   ```
-
-2. **Check app.json configuration**
-3. **Reinstall the app** (deep link associations cache)
-4. **Test with developer mode:**
-   - iOS Settings → Developer → Universal Links → Reset All
-
-### Open Graph not showing
-
-1. **Clear cache:**
-   - Facebook Debugger: https://developers.facebook.com/tools/debug/
-   - Twitter Card Validator: https://cards-dev.twitter.com/validator
-   - LinkedIn Inspector: https://www.linkedin.com/post-inspector/
-
-2. **Verify meta tags are in `<head>`**
-3. **Check image is publicly accessible**
-4. **Image requirements:**
-   - Minimum 200x200px
-   - Recommended 1200x630px
-   - Maximum 8MB file size
+Share the link on Facebook/Twitter/iMessage:
+- ✅ Preview shows 67Time logo
+- ✅ Title and description show
+- ✅ Link is clickable
 
 ---
 
-## Next Steps
+## Comparison: Link Sharing vs Stories Sharing
 
-1. ✅ **Create 67Time website** at 67time.app
-2. ✅ **Set up result landing pages** with Open Graph tags
-3. ✅ **Create Facebook App** and configure platforms
-4. ✅ **Host AASA and assetlinks.json files**
-5. ✅ **Submit app to App Store and Play Store**
-6. ✅ **Test sharing flow** end-to-end
-7. ✅ **Monitor analytics** for shared links
+### When Sharing Link (Facebook/Twitter/iMessage):
+```
+┌─────────────────────────────┐
+│  [67Time Logo]              │  ← Static image (og-image.png)
+│                             │
+│  Beat me in 67Time          │  ← Title
+│  Start a focus session...   │  ← Description
+│  67time.app/username        │  ← Link
+└─────────────────────────────┘
+```
+**Same logo for everyone** ✅
+
+### When Sharing to Stories (Instagram/Facebook):
+```
+┌─────────────────────────────┐
+│  🏆                          │
+│  YOUR BEST TIME             │  ← Captured with react-native-view-shot
+│  1:23.456                   │  ← Shows YOUR specific time
+│  @username                  │
+│  67 completions             │
+│                             │
+│  + User pastes link text    │  ← Manual: "Check my score: 67time.app/username"
+└─────────────────────────────┘
+```
+**Dynamic score card per user** ✅ (already working)
 
 ---
 
-## Additional Resources
+## Quick OG Image Template
 
-- [Expo Linking Documentation](https://docs.expo.dev/guides/linking/)
-- [Facebook Sharing Documentation](https://developers.facebook.com/docs/sharing/)
-- [Apple Universal Links](https://developer.apple.com/ios/universal-links/)
-- [Android App Links](https://developer.android.com/training/app-links)
-- [Open Graph Protocol](https://ogp.me/)
+If you need a quick image, here's HTML you can screenshot:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 1200px;
+      height: 630px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .logo {
+      font-size: 120px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -4px;
+      margin-bottom: 30px;
+    }
+    .tagline {
+      font-size: 32px;
+      color: #888;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">67Time</div>
+  <div class="tagline">The Ultimate Focus Challenge</div>
+</body>
+</html>
+```
+
+**To create image:**
+1. Save as `og-template.html`
+2. Open in browser
+3. Take screenshot (make sure it's 1200x630)
+4. Or use https://www.screely.com/ to capture
+5. Save as `og-image.png`
 
 ---
 
-## Support
+## Advantages of Static Image
 
-For issues or questions:
-- Check existing GitHub issues
-- Create a new issue with detailed logs
-- Include platform (iOS/Android), app version, and steps to reproduce
+✅ **Simple**
+- One image file
+- No API needed
+- No edge runtime
+- No dynamic generation
+
+✅ **Fast**
+- Image loads instantly
+- No computation needed
+- Better performance
+- Lower costs
+
+✅ **Reliable**
+- Never fails to generate
+- No timeout issues
+- Works everywhere
+- Easy to test
+
+✅ **Consistent**
+- Same branding everywhere
+- Professional look
+- Easy to update (just replace file)
+
+---
+
+## Updating the Image Later
+
+To change your OG image:
+1. Design new image (1200x630)
+2. Replace `public/og-image.png`
+3. Deploy
+4. Clear Facebook cache:
+   - Go to Facebook Debugger
+   - Enter your URL
+   - Click "Scrape Again"
+5. Done! ✅
+
+---
+
+## Checklist
+
+- [ ] Create 1200x630 image with 67Time logo
+- [ ] Save as `og-image.png`
+- [ ] Add to `public/` folder in Next.js project
+- [ ] Update `app/[username]/page.tsx` with code above
+- [ ] Deploy website
+- [ ] Test: `https://67time.app/og-image.png` shows image
+- [ ] Test Facebook Debugger
+- [ ] Share link and verify preview shows
+
+---
+
+## Summary
+
+**Mobile App:** ✅ Already done
+- Shares link: `https://67time.app/username`
+- For Stories: Captures score card image with react-native-view-shot
+
+**Website:** 3 simple pieces
+1. Static image: `public/og-image.png` (1200x630 with logo)
+2. User API: `app/api/user/[username]/route.ts` (get user data)
+3. Landing page: `app/[username]/page.tsx` (updated code above)
+
+**Result:**
+- Link previews show: 67Time logo + title + description
+- Stories show: Dynamic score card (captured in app)
+- Simple, fast, reliable ✅
+
+Need help creating the OG image? Let me know! 🎨
